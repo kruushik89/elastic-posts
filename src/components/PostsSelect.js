@@ -1,30 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { getAllPosts } from "../services/posts";
 import { EuiComboBox } from '@elastic/eui';
 
-const Posts = () => {
-  const [posts, setPosts] = useState([]);
-  const [error, setError] = useState(null);
-  const getPosts = async () => {
-    try {
-      const allPosts = await getAllPosts();
-      setPosts(allPosts);
-    } catch (e) {
-      setError(e.message);
-    }
-  }
-
-  useEffect(() => {
-    getPosts();
-  }, []);
+const PostsSelect = ({ posts, isLoading, selectedOptions, setSelected, isError }) => {
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
     const transformedPosts = posts.map(post => ({ label: post.title, id: post.id }));
     setOptions(transformedPosts);
   }, [posts]);
-
-  const [options, setOptions] = useState([]);
-  const [selectedOptions, setSelected] = useState([]);
 
   const onChange = (selectedOptions) => {
     setSelected(selectedOptions);
@@ -62,9 +45,10 @@ const Posts = () => {
       onCreateOption={onCreateOption}
       isClearable={true}
       data-test-subj="demoComboBox"
-      autoFocus
+      isLoading={isLoading}
+      isInvalid={isError}
     />
   );
 };
 
-export default Posts;
+export default PostsSelect;
